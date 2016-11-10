@@ -1,0 +1,60 @@
+我们通过实例来学习使用gcc编译出dll文件的方法，看下面的例子说明这个过程，共有三个文件：hello.c、dll.h和dll.c。 
+hello.c 文件内容如下
+#include <stdio.h> 
+#include "dll.h" 
+int main() 
+{ 
+    hello(); 
+    return 0; 
+} 
+其中，hello()函数是动态连接库提供的函数。 
+dll.h 文件内容如下
+#ifdef BUILD_DLL  
+#define EXPORT __declspec(dllexport) 
+#else  
+#define EXPORT __declspec(dllimport) 
+#endif 
+EXPORT void hello(void); 
+
+dll.c 文件内容如下
+#include "dll.h" 
+EXPORT void hello(void) 
+{ 
+    printf ("Hello\n"); 
+} 
+
+三个文件的内容都很简单，无须解释。
+编译连接程序 
+1、编译hello.c 
+gcc -c hello.c 
+2、编译dll.c 
+gcc -c -DBUILD_DLL dll.c 
+注意要使用要使用-DBUILD_DLL来设置宏BUILD_DLL 
+3、创建dll 
+gcc -shared -o message.dll dll.o -Wl,--out-implib,libmessage.a 
+这一步要详细说明一下 
+-shared参数用来创建共享库，在windows中为dll 
+-Wl 等待下一条信息进行连接 
+--out-implib是给连接程序ld使用的，用于创建要连接dll需要的import library 
+4、创建可执行文件 
+gcc -o hello.exe hello.o -L./ -lmessage
+-L 指定连接库路径
+-lmessage (or -l message) 指定dll的import library 
+好了，编译连接完成，运行程序 
+C:\>hello 
+Hello!
+
+
+
+
+===>
+只修改dll.c内容，无需重新编译hello.exe
+执行：
+gcc -c -DBUILD_DLL dll.c
+gcc -shared -o message.dll dll.o -Wl,--out-implib,libmessage.a
+D:\test\c\gcc dll>hello
+Hello!
+
+
+
+gcc -o libpycall.so -shared -fPIC dll.c
