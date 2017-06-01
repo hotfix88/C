@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 //fengyang test 
 //作为python教程的c语言比对复习使用 
 int main()
@@ -8,6 +9,7 @@ int main()
     
     char c,t;
     char s[]="中文";
+    char s1[10];
     printf("hello world!\n");
     
     //值传递 
@@ -29,7 +31,19 @@ int main()
    
     printf("\n%s\n",s);   
     printf("%d\n",sizeof(s)); 
-   
+    for (i = 0;i<sizeof(s);i++)
+        printf("%2X ",s[i]);
+    printf("\n");
+    
+    memcpy(s1,s,sizeof(s));
+    for (i = 0;i<sizeof(s1);i++)
+        printf("%2X ",s1[i]);
+    printf("\n");
+    
+    printf("%2X ",s[0]);
+    printf("%2X\n",12);
+    printf("%02X\n",12);
+    
     
     getchar();
     return 1;
